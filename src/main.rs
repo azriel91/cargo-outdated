@@ -38,7 +38,6 @@ Options:
         --features FEATURES     Space-separated list of features
     -m, --manifest-path FILE    An absolute path to the Cargo.toml file to use
                                 (Defaults to Cargo.toml in project root)
-        --offline               Run without accessing the network
     -p, --packages PKGS         Packages to inspect for updates
     -r, --root ROOT             Package to treat as the root package
 ";
@@ -52,7 +51,6 @@ pub struct Options {
     flag_quiet: bool,
     flag_verbose: u32,
     flag_exit_code: i32,
-    flag_offline: bool,
     flag_packages: Vec<String>,
     flag_root: Option<String>,
     flag_depth: Option<i32>,
@@ -132,7 +130,7 @@ pub fn execute(options: Options, config: &mut Config) -> CargoResult<i32> {
         &options.flag_color,
         options.frozen(),
         options.locked(),
-        options.flag_offline,
+        false,
         &None,
         &[],
     )?;

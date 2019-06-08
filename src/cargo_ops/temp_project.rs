@@ -120,7 +120,7 @@ impl<'tmp> TempProject<'tmp> {
             &options.flag_color,
             options.frozen(),
             options.locked(),
-            options.flag_offline,
+            false,
             &None,
             &[],
         )?;
