@@ -38,6 +38,7 @@ Options:
         --features FEATURES     Space-separated list of features
     -m, --manifest-path FILE    An absolute path to the Cargo.toml file to use
                                 (Defaults to Cargo.toml in project root)
+        --offline               Run without accessing the network
     -p, --packages PKGS         Packages to inspect for updates
     -r, --root ROOT             Package to treat as the root package
 ";
@@ -51,6 +52,7 @@ pub struct Options {
     flag_quiet: bool,
     flag_verbose: u32,
     flag_exit_code: i32,
+    flag_offline: bool,
     flag_packages: Vec<String>,
     flag_root: Option<String>,
     flag_depth: Option<i32>,
@@ -130,6 +132,7 @@ pub fn execute(options: Options, config: &mut Config) -> CargoResult<i32> {
         &options.flag_color,
         options.frozen(),
         options.locked(),
+        options.flag_offline,
         &None,
         &[],
     )?;
@@ -192,13 +195,7 @@ pub fn execute(options: Options, config: &mut Config) -> CargoResult<i32> {
         verbose!(config, "Printing...", "Package status in list format");
         for member in ela_curr.workspace.members() {
             let package_id = member.package_id();
-            ela_curr.resolve_status(
-                &ela_compat,
-                &ela_latest,
-                &options,
-                config,
-                package_id,
-            )?;
+            ela_curr.resolve_status(&ela_compat, &ela_latest, &options, config, package_id)?;
             sum += ela_curr.print_list(&options, package_id, sum > 0)?;
         }
         if sum == 0 {
