@@ -279,6 +279,7 @@ impl<'tmp> TempProject<'tmp> {
         workspace: &ElaborateWorkspace<'_>,
         find_latest: bool,
     ) -> CargoResult<Summary> {
+        let _lock = self.config.acquire_package_cache_lock()?;
         let package_id = workspace.find_direct_dependency(name, dependent_package_name)?;
         let version = package_id.version();
         let source_id = package_id.source_id().with_precise(None);
